@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 
+const userRoutes = require("./routes/user");
 const app = express();
 
 app.use(express.json());
@@ -11,9 +12,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", (req, res) => {
-  res.status(200).json({ msg: "Get all data" });
-});
+// app.get("/", (req, res) => {
+//   res.status(200).json({ msg: "Get all data" });
+// });
+
+app.use("/api/user", userRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)
