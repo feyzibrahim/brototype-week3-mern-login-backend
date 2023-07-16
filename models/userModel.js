@@ -4,21 +4,32 @@ const validator = require("validator");
 
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
+const userSchema = new Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    userName: {
+      type: String,
+      required: true,
+    },
+    userType: {
+      type: String,
+      required: true,
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-});
+  { timestamps: true }
+);
 
 // Static Signup Method
 
-userSchema.statics.signup = async function (email, password) {
+userSchema.statics.signup = async function (email, password, userName) {
   // Email Validation
   if (!email || !password) {
     throw Error("All Fields must be filled");
@@ -44,8 +55,15 @@ userSchema.statics.signup = async function (email, password) {
   //   Hashing the password
   const hash = await bcrypt.hash(password, salt);
 
+  const type = "user";
+
   //   Creating the user in DB
-  const user = await this.create({ email, password: hash });
+  const user = await this.create({
+    email,
+    password: hash,
+    userName,
+    userType: type,
+  });
 
   return user;
 };
