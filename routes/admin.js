@@ -3,6 +3,7 @@ const {
   getAllUserForAdmin,
   deleteUser,
   updateUser,
+  createUser,
 } = require("../controllers/adminController");
 
 // Controller Functions
@@ -17,5 +18,8 @@ router.delete("/user/:id", deleteUser);
 
 // Update user details
 router.patch("/user/:id", updateUser);
+
+// Create a new user
+router.post("/user", createUser);
 
 module.exports = router;

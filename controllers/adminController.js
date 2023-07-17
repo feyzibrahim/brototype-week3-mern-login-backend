@@ -43,8 +43,22 @@ const updateUser = async (req, res) => {
   res.status(200).json(response);
 };
 
+// Create User function
+const createUser = async (req, res) => {
+  const { email, password, userName, userType } = req.body;
+
+  try {
+    const user = await User.signup(email, password, userName, userType);
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllUserForAdmin,
   deleteUser,
   updateUser,
+  createUser,
 };

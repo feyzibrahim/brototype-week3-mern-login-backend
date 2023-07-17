@@ -29,7 +29,12 @@ const userSchema = new Schema(
 
 // Static Signup Method
 
-userSchema.statics.signup = async function (email, password, userName) {
+userSchema.statics.signup = async function (
+  email,
+  password,
+  userName,
+  userType
+) {
   // Email Validation
   if (!email || !password) {
     throw Error("All Fields must be filled");
@@ -55,14 +60,12 @@ userSchema.statics.signup = async function (email, password, userName) {
   //   Hashing the password
   const hash = await bcrypt.hash(password, salt);
 
-  const type = "user";
-
   //   Creating the user in DB
   const user = await this.create({
     email,
     password: hash,
     userName,
-    userType: type,
+    userType,
   });
 
   return user;
