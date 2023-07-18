@@ -6,9 +6,12 @@ const {
   createUser,
 } = require("../controllers/adminController");
 
-// Controller Functions
+const requireAuth = require("../middleware/requireAuth");
 
+// Controller Functions
 const router = express.Router();
+
+router.use(requireAuth);
 
 // Get all users
 router.get("/users", getAllUserForAdmin);
