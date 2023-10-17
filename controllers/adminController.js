@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const User = require("../models/userModel");
+const validator = require("validator");
+const bcrypt = require("bcrypt");
 
 // Get all users for admin
 const getAllUserForAdmin = async (req, res) => {
@@ -43,12 +45,50 @@ const updateUser = async (req, res) => {
   res.status(200).json(response);
 };
 
-// Create User function
-const createUser = async (req, res) => {
-  const { email, password, userName, userType } = req.body;
-
+const newUser = async (req, res) => {
   try {
-    const user = await User.signup(email, password, userName, userType);
+    console.log(req.body);
+    const { email, password, passwordA, userName, userType } = req.body;
+
+    if (userName.trim() === "") {
+      throw Error("All Fields must be filled");
+    }
+
+    if (!email || !password || !userType || !passwordA || !userName) {
+      throw Error("All Fields must be filled");
+    }
+
+    if (password !== passwordA) {
+      throw Error("Password doesn't match");
+    }
+
+    if (!validator.isEmail(email)) {
+      throw Error("Email is not valid");
+    }
+
+    if (!validator.isStrongPassword(password)) {
+      throw Error("Password is not strong enough");
+    }
+
+    // Checking for duplicate emails
+    const exists = await User.findOne({ email });
+
+    if (exists) {
+      throw Error("Email already in use");
+    }
+
+    //   Adding Salt
+    const salt = await bcrypt.genSalt(10);
+    //   Hashing the password
+    const hash = await bcrypt.hash(password, salt);
+
+    //   Creating the user in DB
+    const user = await User.create({
+      email,
+      password: hash,
+      userName,
+      userType,
+    });
 
     res.status(200).json(user);
   } catch (error) {
@@ -60,5 +100,5 @@ module.exports = {
   getAllUserForAdmin,
   deleteUser,
   updateUser,
-  createUser,
+  newUser,
 };

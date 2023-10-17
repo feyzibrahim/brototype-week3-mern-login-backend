@@ -3,7 +3,7 @@ const {
   getAllUserForAdmin,
   deleteUser,
   updateUser,
-  createUser,
+  newUser,
 } = require("../controllers/adminController");
 
 const requireAuth = require("../middleware/requireAuth");
@@ -16,13 +16,13 @@ router.use(requireAuth);
 // Get all users
 router.get("/users", getAllUserForAdmin);
 
+// Create new user
+router.post("/newUser", newUser);
+
 // Delete one user
 router.delete("/user/:id", deleteUser);
 
 // Update user details
 router.patch("/user/:id", updateUser);
-
-// Create a new user
-router.post("/user", createUser);
 
 module.exports = router;
