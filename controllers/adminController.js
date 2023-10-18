@@ -32,11 +32,20 @@ const updateUser = async (req, res) => {
     return res.status(400).json({ error: "Invalid ID!!!" });
   }
 
-  const response = await User.findOneAndUpdate(
-    { _id: id },
-    { ...req.body },
-    { new: true }
-  );
+  const profilePhotoPath = req?.file?.path;
+  let dpPath = "";
+  if (profilePhotoPath) {
+    dpPath = profilePhotoPath;
+  }
+
+  let data = { ...req.body };
+  if (dpPath !== "") {
+    data = { ...req.body, dpPath };
+  }
+
+  const response = await User.findOneAndUpdate({ _id: id }, data, {
+    new: true,
+  });
 
   if (!response) {
     return res.status(400).json({ error: "No Such User" });
@@ -82,12 +91,20 @@ const newUser = async (req, res) => {
     //   Hashing the password
     const hash = await bcrypt.hash(password, salt);
 
+    // Getting the Profile Image
+    const profilePhotoPath = req?.file?.path;
+    let dpPath = "";
+    if (profilePhotoPath) {
+      dpPath = profilePhotoPath;
+    }
+
     //   Creating the user in DB
     const user = await User.create({
       email,
       password: hash,
       userName,
       userType,
+      dpPath,
     });
 
     res.status(200).json(user);

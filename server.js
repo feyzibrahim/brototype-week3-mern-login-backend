@@ -16,6 +16,10 @@ app.use((req, res, next) => {
   console.log(req.path, req.method);
   next();
 });
+app.use(
+  "/upload/public/profile/img",
+  express.static(__dirname + "/public/profile/img")
+);
 
 app.use("/api/user", userRoutes);
 app.use("/api/admin", adminRoutes);

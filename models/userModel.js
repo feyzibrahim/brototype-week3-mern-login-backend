@@ -23,13 +23,21 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    dpPath: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
 
 // Static Signup Method
 
-userSchema.statics.signup = async function (email, password, userName) {
+userSchema.statics.signup = async function (
+  email,
+  password,
+  userName,
+  profilePhotoPath
+) {
   // Email Validation
 
   if (userName.trim() === "") {
@@ -55,6 +63,11 @@ userSchema.statics.signup = async function (email, password, userName) {
     throw Error("Email already in use");
   }
 
+  let dpPath = "";
+  if (profilePhotoPath) {
+    dpPath = profilePhotoPath;
+  }
+
   //   Adding Salt
   const salt = await bcrypt.genSalt(10);
   //   Hashing the password
@@ -68,6 +81,7 @@ userSchema.statics.signup = async function (email, password, userName) {
     password: hash,
     userName,
     userType: type,
+    dpPath,
   });
 
   return user;
